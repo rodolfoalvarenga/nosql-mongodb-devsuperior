@@ -23,9 +23,8 @@ public class UserService {
 		return list.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
 	}
 	
-	public UserDTO findById(String id) {
-		Optional<User> result = repository.findById(id);
-		User entity = result.orElseThrow(() -> new ResourceNotFoundException("Objeto não encontrado"));
+	public UserDTO findById(String id) { 
+		User entity = getEntityById(id);
 		return new UserDTO(entity);
 	}
 	
@@ -34,6 +33,18 @@ public class UserService {
 		copyDtoToEntity(dto, entity);
 		entity = repository.insert(entity);
 		return new UserDTO(entity);
+	}
+	
+	public UserDTO update(String id, UserDTO dto) {
+		User entity = getEntityById(id);
+		copyDtoToEntity(dto, entity);
+		entity = repository.save(entity);
+		return new UserDTO(entity);
+	}
+	
+	private User getEntityById(String id) {
+		Optional<User> result = repository.findById(id);
+		return result.orElseThrow(() -> new ResourceNotFoundException("Objeto não encontrado"));
 	}
 
 	private void copyDtoToEntity(UserDTO dto, User entity) {
