@@ -1,6 +1,8 @@
 package com.devsuperior.workshopmongo.services;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,11 @@ public class PostService {
 	public PostDTO findById(String id) {
 		Post entity = getEntityById(id);
 		return new PostDTO(entity);
+	}
+	
+	public List<PostDTO> findByTitle(String text) {
+		List<Post> list = repository.findByTitleContainingIgnoreCase(text);
+		return list.stream().map(x -> new PostDTO(x)).collect(Collectors.toList());
 	}
 	
 	private Post getEntityById(String id) {
